@@ -1,0 +1,16 @@
+/* ========================================
+   01. ROOT VARIABLES
+======================================== */
+
+:root {
+    --dark-green: #16241d;
+    --panel-green: #2c4738;
+    --light-green: #689f48;
+    --cream: #f7ebd2;
+    --gold: #e3b254;
+    --wood: #a66a3c;
+    --dark-wood: #5e3a22;
+    --danger: #c84b3c;
+    --border: #7a946b;
+    --shadow: #0f1a14;
+}
