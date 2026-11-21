@@ -37,9 +37,51 @@ body {
 }
 
 .game-title h1,
-.stat-box h2 {
+.menu-title,
+.stat-box h2,
+.menu-start-btn,
+.difficulty-btn span,
+.food-name,
+.game-controls button,
+.modal-content h2,
+.result-box h3,
+.menu-board h3 {
     font-family: "Fredoka", sans-serif;
     letter-spacing: 0.5px;
+}
+
+button,
+input,
+select {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+button:not(:disabled):hover {
+    filter: brightness(1.12);
+}
+
+button:not(:disabled):active {
+    transform: translateY(3px);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+button:focus-visible,
+summary:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+}
+
+[hidden] {
+    display: none !important;
 }
 
 
@@ -63,10 +105,11 @@ body {
 
 
 /* ========================================
-   04. GAME HEADER
+   04. GAME HEADER & PLAYER BADGE OVERRIDE
 ======================================== */
 
 .game-header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -101,6 +144,15 @@ body {
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 1.5px;
+}
+
+/* Matches players.js badge to the warm wood theme */
+.rush-player-badge {
+    border-color: var(--border) !important;
+    color: #ffe396 !important;
+    background: #3b2214 !important;
+    border-radius: 5px;
+    font-weight: 700;
 }
 
 
@@ -138,50 +190,1398 @@ body {
 
 
 /* ========================================
-   06. HEADER RESPONSIVENESS
+   06. MAIN GAME LAYOUT & LOCKED STAGE RATIO
+======================================== */
+
+.game-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.canteen-area {
+    position: relative;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1400 / 520; /* Locks exact proportions across all screen sizes */
+    background: #f5e2c1;
+    border: 3px solid var(--dark-wood);
+    border-radius: 6px;
+    box-shadow:
+        inset 0 0 35px rgba(71, 40, 22, 0.18),
+        0 4px 0 var(--shadow);
+    overflow: hidden;
+    --person-width: clamp(24px, 5vw, 70px);
+}
+
+/* Custom Banderitas PNG (No old CSS triangles) */
+.canteen-area::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 7%;
+    z-index: 3;
+    pointer-events: none;
+    background-image: url('../assets/img/gamedesign/banderitas.png');
+    background-size: auto 100%;
+    background-position: left top;
+    background-repeat: repeat-x;
+}
+
+/* Custom Karaoke PNG beside Entrance Door */
+.canteen-area::after {
+    content: "";
+    position: absolute;
+    right: 12%;
+    bottom: 34%;
+    width: 9%;
+    aspect-ratio: 0.62;
+    background: url('../assets/img/gamedesign/karaoke.png') bottom center / contain no-repeat;
+    z-index: 2;
+    pointer-events: none;
+}
+
+
+/* ========================================
+   07. CANTEEN WALL
+======================================== */
+
+.canteen-wall {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 44%;
+    background:
+        url('../assets/img/gamedesign/upper-wall.png') top left / auto 100% repeat-x,
+        linear-gradient(180deg, #f7e4c1 0%, #edd3a6 100%);
+    border-top: 6px solid #7d492a;
+    border-bottom: 5px solid #b58958;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5%;
+    padding: 2.2% 3% 1.2%;
+}
+
+/* Custom Wall Fan PNG (Upper Right Wall) */
+.canteen-wall::after {
+    content: "";
+    position: absolute;
+    top: 12%;
+    right: 9.5%;
+    width: 4.6%;
+    aspect-ratio: 130 / 150;
+    background: url('../assets/img/gamedesign/wall-fan.png') center / contain no-repeat;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ========================================
+   08. MENU BOARD
+======================================== */
+
+.menu-board {
+    flex: 0 0 21%;
+    max-width: 260px;
+    background:
+        url('../assets/img/gamedesign/menu-board.png') center / 100% 100% no-repeat,
+        #2b2623;
+    border: none;
+    border-radius: 4px;
+    padding: 1.1% 1.4%;
+    color: var(--cream);
+}
+
+.menu-board h3 {
+    text-align: center;
+    font-size: clamp(9px, 1.25vw, 16px);
+    color: var(--gold);
+    border-bottom: 2px solid #6e5a4f;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin: 4% 0;
+    font-size: clamp(7px, 0.95vw, 13px);
+    font-weight: 600;
+}
+
+.menu-item span:last-child {
+    color: var(--gold);
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   09. WINDOWS
+======================================== */
+
+.windows {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5%;
+    flex: 1;
+    height: 82%;
+    min-width: 0;
+}
+
+.window {
+    position: relative;
+    width: 24%;
+    height: 100%;
+    background: url('../assets/img/gamedesign/window.png') center / 100% 100% no-repeat;
+    border: none;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.window::before,
+.window::after {
+    display: none;
+}
+
+
+/* ========================================
+   10. WALL CLOCK
+======================================== */
+
+.wall-clock {
+    position: relative;
+    flex-shrink: 0;
+    width: 6%;
+    aspect-ratio: 1;
+    background: url('../assets/img/gamedesign/wall-clock.png') center / contain no-repeat;
+    border: none;
+    box-shadow: none;
+}
+
+.clock-hour,
+.clock-minute {
+    position: absolute;
+    left: calc(50% - 1.5px);
+    bottom: 50%;
+    width: 3px;
+    background: #3b2314;
+    border-radius: 2px;
+    transform-origin: bottom center;
+}
+
+.clock-hour {
+    height: 24%;
+    transform: rotate(90deg);
+}
+
+.clock-minute {
+    height: 34%;
+    animation: clock-tick 60s linear infinite;
+}
+
+.clock-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: #3b2314;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes clock-tick {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+
+/* ========================================
+   11. WALL TILES (Wainscot + Checkered Tiles)
+======================================== */
+
+.wall-tiles {
+    position: absolute;
+    top: 44%;
+    width: 100%;
+    height: 17%;
+    background-color: #e6cfa8;
+    background-image:
+        url('../assets/img/gamedesign/wall-wainscot.png'),
+        url('../assets/img/gamedesign/wall-tile.png');
+    background-size: auto 100%, 5.7% 72%;
+    background-repeat: repeat-x, repeat;
+    border-top: none;
+    border-bottom: none;
+}
+
+
+/* ========================================
+   12. CANTEEN FLOOR (Checkered Floor Tiles)
+======================================== */
+
+.canteen-floor {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 39%;
+    background-color: #d9a773;
+    background-image: url('../assets/img/gamedesign/floor-tile.png');
+    background-size: 5.7% 39.5%;
+    background-repeat: repeat;
+}
+
+
+/* ========================================
+   13. CASHIER STATION & CHARACTER
+======================================== */
+
+.cashier-station {
+    position: absolute;
+    bottom: 6%;
+    left: 2%;
+    width: 19%;
+    height: 51%;
+    z-index: 3;
+}
+
+.cashier-sign {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 3% 2px;
+    background: #5c3824;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    color: #ffe396;
+    font-size: clamp(7px, 1.1vw, 15px);
+    font-weight: 800;
+    text-align: center;
+    box-shadow: 0 3px 0 var(--dark-wood);
+}
+
+.cashier {
+    position: absolute;
+    width: 42%;
+    max-width: 90px;
+    height: 55%;
+    left: 22%;
+    bottom: 32%;
+    z-index: 2;
+}
+
+.cashier-hair {
+    position: absolute;
+    top: 0;
+    left: 13%;
+    width: 74%;
+    height: 19%;
+    background: #2e1d14;
+    box-shadow: 4px 0 #2e1d14;
+    z-index: 2;
+}
+
+.cashier-head {
+    position: absolute;
+    top: 12%;
+    left: 17%;
+    width: 66%;
+    height: 35%;
+    background: #f0be96;
+    border-bottom: 4px solid #c98d63;
+}
+
+.cashier-eye {
+    position: absolute;
+    top: 42%;
+    width: 10%;
+    height: 14%;
+    background: #2e1d14;
+}
+
+.left-eye { left: 20%; }
+.right-eye { right: 20%; }
+
+.cashier-mouth {
+    position: absolute;
+    bottom: 18%;
+    left: 39%;
+    width: 22%;
+    height: 8%;
+    background: #9e5842;
+}
+
+.cashier-body {
+    position: absolute;
+    top: 47%;
+    left: 10%;
+    width: 80%;
+    height: 53%;
+    background: #ffffff;
+}
+
+.cashier-apron {
+    position: absolute;
+    top: 8%;
+    left: 22%;
+    width: 56%;
+    height: 82%;
+    background: var(--light-green);
+}
+
+.cashier-arm {
+    position: absolute;
+    top: 12%;
+    width: 18%;
+    height: 65%;
+    background: #f0be96;
+}
+
+.left-arm { left: -15%; }
+.right-arm { right: -15%; }
+
+
+/* ========================================
+   14. COUNTER TABLE (Custom PNG)
+======================================== */
+
+.counter-table {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 39%;
+    z-index: 4;
+    background: url('../assets/img/gamedesign/counter-table.png') bottom center / 100% 100% no-repeat;
+}
+
+.counter-top,
+.counter-front,
+.cash-register {
+    display: none !important;
+}
+
+
+/* ========================================
+   15. CUSTOMER QUEUE AREA
+======================================== */
+
+.queue-area {
+    position: absolute;
+    left: 23%;
+    right: 12%;
+    bottom: 5%;
+    height: 56%;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.customer-queue {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.queue-path {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    border-top: 2px dashed rgba(92, 56, 36, 0.45);
+    background: rgba(255, 255, 255, 0.12);
+    padding: 2px 0;
+}
+
+.queue-arrow {
+    font-weight: bold;
+    color: #7d492a;
+    font-size: clamp(10px, 1.2vw, 16px);
+}
+
+.queue-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: clamp(8px, 0.9vw, 11px);
+    font-weight: 800;
+    color: var(--dark-wood);
+}
+
+.front-label {
+    background: var(--light-green);
+    color: #ffffff;
+    padding: 3px 10px;
+    border: 2px solid #2e5c2c;
+    border-radius: 4px;
+}
+
+.rear-label {
+    padding: 3px 8px;
+    background: #e6c697;
+    border-radius: 4px;
+}
+
+
+/* ========================================
+   16. CUSTOMER CHARACTER
+======================================== */
+
+.customer {
+    position: absolute;
+    bottom: 0;
+    left: 100%;
+    width: calc(100% / 6);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 4px;
+    transition: left 0.55s ease-in-out;
+    will-change: left;
+
+    --shirt-color: #4b8f48;
+    --skin-color: #f0be96;
+    --hair-color: #2e1d14;
+    --pants-color: #364147;
+}
+
+.customer-character {
+    position: relative;
+    width: var(--person-width);
+    max-width: 85%;
+    aspect-ratio: 0.58;
+    z-index: 2;
+}
+
+.customer-hair {
+    position: absolute;
+    top: 0;
+    left: 15%;
+    width: 70%;
+    height: 13%;
+    background: var(--hair-color);
+    box-shadow: 3px 3px var(--hair-color);
+    z-index: 2;
+}
+
+.customer-head {
+    position: absolute;
+    top: 9%;
+    left: 18%;
+    width: 64%;
+    height: 27%;
+    background: var(--skin-color);
+    border-bottom: 3px solid #c98d63;
+}
+
+.customer-eye {
+    position: absolute;
+    top: 42%;
+    width: 10%;
+    height: 15%;
+    background: #2e1d14;
+}
+
+.customer-mouth {
+    position: absolute;
+    bottom: 18%;
+    left: 38%;
+    width: 24%;
+    height: 8%;
+    background: #9e5842;
+}
+
+.customer-body {
+    position: absolute;
+    top: 36%;
+    left: 14%;
+    width: 72%;
+    height: 38%;
+    background: var(--shirt-color);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.2);
+}
+
+.customer-arm {
+    position: absolute;
+    top: 7%;
+    width: 16%;
+    height: 75%;
+    background: var(--skin-color);
+}
+
+.customer-bag {
+    position: absolute;
+    top: 7%;
+    right: -20%;
+    width: 35%;
+    height: 85%;
+    background: #8a522e;
+    border: 2px solid var(--dark-wood);
+    border-radius: 3px;
+}
+
+.customer-legs {
+    position: absolute;
+    top: 74%;
+    left: 16%;
+    width: 68%;
+    height: 26%;
+}
+
+.customer-leg {
+    position: absolute;
+    width: 43%;
+    height: 100%;
+    background: var(--pants-color);
+    border-bottom: 5px solid #212426;
+}
+
+.left-leg { left: 0; }
+.right-leg { right: 0; }
+
+.customer-shadow {
+    width: 65%;
+    height: 8px;
+    margin-top: -3px;
+    background: rgba(71, 40, 22, 0.3);
+    border-radius: 50%;
+}
+
+.customer-number {
+    margin-top: 3px;
+    font-size: clamp(7px, 0.9vw, 12px);
+    font-weight: 800;
+    color: var(--dark-wood);
+}
+
+
+/* ========================================
+   17. CUSTOMER ORDER BUBBLE & PATIENCE
+======================================== */
+
+.order-bubble {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 72%;
+    max-width: 62px;
+    aspect-ratio: 1.25;
+    background: #ffffff;
+    border: 2px solid var(--dark-wood);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 2px 3px rgba(71, 40, 22, 0.25);
+}
+
+.order-bubble::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: calc(50% - 5px);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid var(--dark-wood);
+}
+
+.customer-order-icon {
+    font-size: clamp(12px, 2.2vw, 30px);
+}
+
+.customer-patience {
+    width: 75%;
+    max-width: 65px;
+    height: 7px;
+    background: #a36c58;
+    border: 1px solid var(--dark-wood);
+    border-radius: 4px;
+    margin-bottom: 6px;
+    overflow: hidden;
+}
+
+.customer-patience-fill {
+    width: 100%;
+    height: 100%;
+    background: var(--light-green);
+    transition: width 0.2s linear;
+}
+
+.customer.impatient .customer-patience-fill { background: var(--gold); }
+.customer.angry .customer-patience-fill { background: var(--danger); }
+
+
+/* ========================================
+   18. ENTRANCE DOOR (Custom PNG)
+======================================== */
+
+.entrance {
+    position: absolute;
+    right: 2%;
+    bottom: 6%;
+    width: 9%;
+    height: 52%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.entrance-sign {
+    background: #472816;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 2px;
+    font-size: clamp(6px, 0.9vw, 12px);
+    text-align: center;
+    font-weight: 800;
+    color: #ffe396;
+}
+
+.door {
+    position: relative;
+    height: 85%;
+    width: 100%;
+    background: url('../assets/img/gamedesign/door.png') center / 100% 100% no-repeat;
+    border: none;
+    box-shadow: none;
+}
+
+.door-window,
+.door-handle {
+    display: none !important;
+}
+
+
+/* ========================================
+   19. SERVING STATION & CURRENT ORDER
+======================================== */
+
+.serving-station {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(180deg, #6b4129 0%, #4f2e1c 100%);
+    border: 3px solid var(--border);
+    border-radius: 6px;
+}
+
+.current-order {
+    position: relative;
+    flex: 0 0 25%;
+    min-width: 190px;
+    padding: 12px;
+    background: #3b2214;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+}
+
+.order-label {
+    color: #e6c697;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+#orderNumber {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.order-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 55px;
+}
+
+.order-icon {
+    font-size: 34px;
+}
+
+.order-info h3 {
+    font-size: 15px;
+    color: #ffe396;
+}
+
+.order-info p {
+    font-size: 11px;
+    color: #d9b88c;
+    margin-top: 4px;
+}
+
+.patience-container span {
+    color: #e6c697;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.patience-track {
+    height: 9px;
+    margin-top: 4px;
+    border: 2px solid var(--dark-wood);
+    border-radius: 4px;
+    background: #24130a;
+    overflow: hidden;
+}
+
+.patience-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--light-green);
+    transition: width 0.2s linear;
+}
+
+
+/* ========================================
+   20. FOOD MENU BUTTONS
+======================================== */
+
+.food-menu {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.food-btn {
+    position: relative;
+    min-width: 0;
+    min-height: 100px;
+    padding: 12px 8px;
+    background: #fff5e0;
+    border: 4px solid #9e6238;
+    border-radius: 8px;
+    color: #3d2315;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow:
+        inset 0 0 0 2px #e6cfa8,
+        0 4px 0 var(--dark-wood);
+}
+
+.food-btn:not(:disabled):hover {
+    background: #ffffff;
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
+
+.food-icon {
+    display: grid;
+    place-items: center;
+    width: clamp(38px, 5vw, 62px);
+    aspect-ratio: 1;
+    font-size: clamp(25px, 3vw, 40px);
+    background: #f5e2c1;
+    border: 2px solid #cfa876;
+    border-radius: 50%;
+    box-shadow: 0 3px 0 #cfa876;
+    transition: transform 0.2s ease;
+}
+
+.food-btn:not(:disabled):hover .food-icon {
+    transform: scale(1.08);
+}
+
+.food-name {
+    font-size: clamp(11px, 1.2vw, 15px);
+    font-weight: 700;
+    text-align: center;
+}
+
+.key-label {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-width: 21px;
+    padding: 2px 5px;
+    background: #e6cfa8;
+    color: #5c3824;
+    border: 2px solid #b88958;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.food-btn.correct {
+    background: #b8e39d;
+    border-color: var(--light-green);
+}
+
+.food-btn.incorrect {
+    background: #f2a49b;
+    border-color: var(--danger);
+}
+
+
+/* ========================================
+   21. CONTROL PANEL
+======================================== */
+
+.control-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, #5c3824 0%, #452818 100%);
+    border: 3px solid var(--border);
+    border-radius: 6px;
+}
+
+.message-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.message-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #e6c697;
+    letter-spacing: 1px;
+}
+
+.game-message {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffe396;
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+}
+
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.game-controls button {
+    padding: 10px 14px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 3px 0 var(--shadow);
+}
+
+.sound-btn { background: var(--light-green); }
+.pause-btn { background: #e09f36; }
+.restart-btn { background: var(--danger); }
+.main-menu-btn { background: #4a5559; }
+
+
+/* ========================================
+   22. START MENU & MODALS
+======================================== */
+
+.start-menu {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 65px 20px 25px;
+    overflow: auto;
+    background: rgba(28, 15, 9, 0.82);
+}
+
+.menu-content {
+    width: 100%;
+    max-width: 850px;
+    text-align: center;
+    color: var(--cream);
+    animation: menu-appear 0.5s ease-out;
+}
+
+@keyframes menu-appear {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.game-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 95px;
+    height: 95px;
+    margin: 0 auto 22px;
+    font-size: 57px;
+    background: var(--cream);
+    border: 4px solid var(--wood);
+    border-radius: 14px;
+    box-shadow: 5px 6px 0 var(--shadow);
+    transform: rotate(-6deg);
+    animation: floating-logo 3s ease-in-out infinite;
+}
+
+@keyframes floating-logo {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-8px) rotate(-3deg); }
+}
+
+.menu-subtitle {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 4px;
+    font-weight: 800;
+}
+
+.menu-title {
+    margin: 12px 0;
+    font-size: clamp(32px, 6vw, 82px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 1px;
+    color: #ffe396;
+    text-shadow:
+        3px 3px 0 #9e6238,
+        6px 6px 0 #5c3824,
+        9px 9px 0 var(--shadow);
+}
+
+.menu-start-btn {
+    margin-top: 15px;
+    padding: 17px 45px;
+    background: var(--light-green);
+    border: 3px solid #a8e09b;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: clamp(17px, 2vw, 24px);
+    font-weight: 700;
+    box-shadow: 0 6px 0 #2b5429;
+}
+
+.menu-start-btn:hover {
+    background: #5ca659;
+    transform: translateY(-3px);
+}
+
+.menu-start-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #2b5429;
+}
+
+.difficulty-section {
+    margin-top: 30px;
+}
+
+.difficulty-section > p {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #f2d5a7;
+}
+
+.difficulty-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.difficulty-btn {
+    position: relative;
+    cursor: pointer;
+}
+
+.difficulty-btn input {
+    position: absolute;
+    opacity: 0;
+}
+
+.difficulty-btn span {
+    display: block;
+    min-width: 115px;
+    padding: 11px 16px;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    transition: 0.15s ease;
+}
+
+.easy span { background: var(--light-green); }
+.normal span { background: #e09f36; }
+.hard span { background: var(--danger); }
+
+.difficulty-btn:hover span { filter: brightness(1.12); }
+
+.difficulty-btn input:checked + span {
+    border-color: #ffe396;
+    box-shadow: 0 0 0 3px var(--dark-green);
+    transform: translateY(-3px);
+}
+
+.difficulty-btn input:focus-visible + span {
+    outline: 3px solid white;
+    outline-offset: 4px;
+}
+
+#difficultyDescription {
+    margin-top: 14px;
+    color: #e6c697;
+    font-size: 12px;
+}
+
+.how-to-play-btn,
+.menu-sound-btn {
+    position: absolute;
+    top: 18px;
+    padding: 10px 15px;
+    background: var(--cream);
+    color: #472816;
+    border: 3px solid var(--wood);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 3px 0 var(--shadow);
+    z-index: 2;
+}
+
+.how-to-play-btn { left: 18px; }
+.menu-sound-btn { right: 18px; }
+
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: auto;
+    background: rgba(28, 15, 9, 0.88);
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 600px;
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 25px;
+    background: var(--panel-green);
+    color: var(--cream);
+    border: 4px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 7px 0 var(--shadow);
+}
+
+.modal-content h2 {
+    color: #ffe396;
+    text-align: center;
+    font-size: 27px;
+    margin-bottom: 20px;
+}
+
+.modal-content button {
+    padding: 13px 20px;
+    background: var(--light-green);
+    color: #ffffff;
+    border: 2px solid #a8e09b;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 0 #2b5429;
+}
+
+.instruction {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px;
+    margin-bottom: 9px;
+    background: #3b2214;
+    border-left: 4px solid var(--gold);
+    border-radius: 4px;
+}
+
+.instruction-number {
+    color: var(--gold);
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.instruction h3 {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.instruction p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #f2d5a7;
+}
+
+.keyboard-guide {
+    padding: 15px;
+    background: #3b2214;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+
+.keyboard-guide h3 {
+    color: var(--gold);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.keyboard-guide p {
+    margin: 9px 0;
+    font-size: 12px;
+}
+
+kbd {
+    display: inline-block;
+    padding: 4px 8px;
+    min-width: 25px;
+    text-align: center;
+    color: #3d2315;
+    background: var(--cream);
+    border-radius: 4px;
+    font-weight: 800;
+    box-shadow: 0 2px 0 var(--wood);
+}
+
+.close-modal-btn {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+}
+
+.pause-content {
+    max-width: 400px;
+    text-align: center;
+}
+
+.pause-icon {
+    font-size: 65px;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.pause-content p {
+    color: #f2d5a7;
+    margin-bottom: 25px;
+}
+
+.pause-content button {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+}
+
+#pauseRestartBtn { background: #e09f36; }
+#pauseMenuBtn { background: var(--danger); }
+
+.game-over-content {
+    text-align: center;
+    max-width: 520px;
+}
+
+.result-icon {
+    font-size: 65px;
+    margin-bottom: 15px;
+}
+
+#resultMessage {
+    color: #f2d5a7;
+    line-height: 1.5;
+}
+
+.result-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.result-box {
+    padding: 15px 8px;
+    background: #3b2214;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+}
+
+.result-box span {
+    font-size: 10px;
+    font-weight: 700;
+    color: #e6c697;
+}
+
+.result-box h3 {
+    font-size: 32px;
+    color: #ffe396;
+    margin-top: 8px;
+}
+
+.result-controls {
+    display: flex;
+    gap: 12px;
+}
+
+.result-controls button { flex: 1; }
+#resultMenuBtn { background: var(--danger); }
+
+
+/* ========================================
+   23. CUSTOMER ANIMATIONS
+======================================== */
+
+.customer.entering { animation: customer-enter 0.45s ease-out; }
+@keyframes customer-enter {
+    from { opacity: 0; transform: translateX(80px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.customer.served { animation: happy-customer 0.4s ease forwards; }
+@keyframes happy-customer {
+    0% { opacity: 1; transform: translateY(0); }
+    40% { opacity: 1; transform: translateY(-20px); }
+    100% { opacity: 0; transform: translateY(-35px); }
+}
+
+.customer.leaving { animation: angry-customer 0.4s ease forwards; }
+@keyframes angry-customer {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100px); }
+}
+
+.customer.wrong-order { animation: shake 0.3s ease; }
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%, 75% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+}
+
+.customer-leg,
+.customer-arm { transform-origin: top center; }
+
+.customer.walking .customer-leg.left-leg { animation: walk-left 0.3s linear infinite; }
+.customer.walking .customer-leg.right-leg { animation: walk-right 0.3s linear infinite; }
+.customer.walking .customer-arm.left-arm { animation: walk-right 0.3s linear infinite; }
+.customer.walking .customer-arm.right-arm { animation: walk-left 0.3s linear infinite; }
+.customer.walking .customer-character { animation: walking-bounce 0.3s linear infinite; }
+
+@keyframes walk-left {
+    0%, 100% { transform: rotate(-18deg); }
+    50% { transform: rotate(18deg); }
+}
+
+@keyframes walk-right {
+    0%, 100% { transform: rotate(18deg); }
+    50% { transform: rotate(-18deg); }
+}
+
+@keyframes walking-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.customer.is-front .order-bubble {
+    border-color: var(--light-green);
+    box-shadow: 0 0 0 3px rgba(75, 143, 72, 0.35);
+}
+
+.customer.is-front .customer-number {
+    background: var(--light-green);
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.customer.departing {
+    pointer-events: none;
+    z-index: 5;
+}
+
+.customer.angry .order-bubble {
+    border-color: var(--danger);
+    background: #ffe3e0;
+}
+
+.customer.angry .customer-mouth {
+    height: 12%;
+    background: #802d24;
+}
+
+
+/* ========================================
+   24. RESPONSIVENESS (Aspect Ratio Preserved!)
 ======================================== */
 
 @media (max-width: 1000px) {
-    .game-stats {
-        flex: 1;
-    }
-
-    .game-header {
-        gap: 12px;
-    }
+    .game-stats { flex: 1; }
+    .game-header { gap: 12px; }
+    .serving-station { flex-direction: column; }
+    .current-order { width: 100%; min-width: 0; }
+    .food-btn { min-height: 85px; }
+    .control-panel { flex-wrap: wrap; }
 }
 
 @media (max-width: 600px) {
-    body {
-        padding: 5px;
-    }
+    body { padding: 5px; }
+    .game-container { padding: 6px; border-width: 2px; }
+    .game-header { flex-direction: column; padding: 10px; text-align: center; }
+    .game-stats { width: 100%; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+    .stat-box { padding: 6px 3px; }
+    .stat-box span { font-size: 8px; }
+    .stat-box h2 { font-size: 18px; }
 
-    .game-container {
-        padding: 6px;
-        border-width: 2px;
-    }
+    /* Notice: NO height: 340px override here so the canteen room stays 100% proportional! */
 
-    .game-header {
-        flex-direction: column;
-        padding: 10px;
-        text-align: center;
-    }
+    .serving-station { padding: 8px; gap: 8px; }
+    .food-menu { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .food-btn { min-height: 75px; }
+    .control-panel { flex-direction: column; align-items: stretch; }
+    .game-controls { display: grid; grid-template-columns: repeat(2, 1fr); }
+    .game-controls button { padding: 10px 5px; }
+    .start-menu { align-items: flex-start; padding-top: 100px; }
+    .game-logo { width: 75px; height: 75px; font-size: 43px; }
+    .menu-title { font-size: clamp(28px, 8vw, 42px); letter-spacing: 0; }
+    .menu-subtitle { font-size: 10px; letter-spacing: 2px; }
+    .menu-start-btn { padding: 15px 25px; }
+    .difficulty-options { gap: 6px; }
+    .difficulty-btn span { min-width: 75px; padding: 9px 7px; font-size: 12px; }
+    .how-to-play-btn, .menu-sound-btn { font-size: 10px; padding: 8px; }
+    .how-to-play-btn { left: 10px; }
+    .menu-sound-btn { right: 10px; }
+    .modal-content { padding: 15px; }
+    .modal-content h2 { font-size: 22px; }
+    .result-controls { flex-direction: column; }
+}
 
-    .game-stats {
-        width: 100%;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 4px;
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
     }
-
-    .stat-box {
-        padding: 6px 3px;
-    }
-
-    .stat-box span {
-        font-size: 8px;
-    }
-
-    .stat-box h2 {
-        font-size: 18px;
-    }
+    .customer { transition: none; }
 }
